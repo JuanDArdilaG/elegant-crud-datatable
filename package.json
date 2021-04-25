@@ -1,0 +1,40 @@
+{
+  "name": "elegant-crud-datatable",
+  "version": "0.0.1",
+  "description": "Elegant CRUD DataTable",
+  "main": "./build",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "test": "",
+    "dev": "snowpack dev",
+    "build": "snowpack build",
+    "publish": "np -y",
+    "css:watch": "postcss src/**/*.css -o css/main.css -- watch",
+    "postcss": "postcss --config postcss.json",
+    "css:concat": "cat src/css/*.css > src/css/bundle.css",
+    "cssnext": "postcss -u postcss-cssnext src/css/bundle.css >  src/css/bundle.next.css",
+    "css:comb": "csscomb src/css/bundle.next.css",
+    "css:uncss": "cat *.html | uncss -s src/css/bundle.next.css > src/css/bundle.clean.css",
+    "css:minify": "cleancss src/css/bundle.clean.css -o css/bundle.min.css  && rm src/css/bundle.*",
+    "build:css": "echo '=> build:css' && npm run css:concat && npm run cssnext && npm run css:comb  && npm run css:uncss && npm run css:minify"
+  },
+  "devDependencies": {
+    "@snowpack/plugin-postcss": "^1.2.2",
+    "@types/jquery": "^3.5.5",
+    "autoprefixer": "^10.2.5",
+    "clean-css": "^5.1.2",
+    "concat-cli": "^4.0.0",
+    "critical": "^3.0.1",
+    "csscomb": "^4.3.0",
+    "np": "^7.5.0",
+    "postcss": "^8.2.12",
+    "postcss-cli": "^8.3.1",
+    "postcss-cssnext": "^3.1.0",
+    "rework-npm-cli": "^0.1.3",
+    "snowpack": "^3.3.5",
+    "tailwindcss": "^2.1.2",
+    "uncss": "^0.17.3"
+  }
+}
