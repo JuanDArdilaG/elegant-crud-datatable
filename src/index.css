@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+
+.table-header {
+  @apply px-5 py-2 font-normal text-center border-b border-blue-900 text-2xl tracking-wide mb-1 mx-1;
+}
+
+.subgroup-description {
+  @apply w-full text-center h-auto py-2 border-b border-t border-blue-400 bg-blue-100 tracking-wider font-normal uppercase text-sm;
+}
+
+.cell {
+  @apply font-light py-2 text-center border-b border-blue-100;
+}
+
+.settings {
+  @apply relative;
+}
+
+.settings-icon {
+  @apply opacity-70 hover:opacity-100 transition-opacity duration-500 cursor-pointer text-pink-900;
+}
+
+.settings-actions {
+  @apply text-gray-600;
+}
+
+.settings-actions i {
+  @apply cursor-pointer;
+}
+
+@tailwind utilities;
