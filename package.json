@@ -1,6 +1,6 @@
 {
   "name": "elegant-crud-datatable",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Elegant CRUD DataTable",
   "main": "./index.js",
   "files": [
@@ -10,7 +10,7 @@
     "test": "",
     "dev": "snowpack dev",
     "build": "snowpack build",
-    "publish": "np -y",
+    "np": "np",
     "css:watch": "postcss src/**/*.css -o css/main.css -- watch",
     "postcss": "postcss --config postcss.json",
     "css:concat": "cat src/css/*.css > src/css/bundle.css",
