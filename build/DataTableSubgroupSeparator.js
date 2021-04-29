@@ -1,22 +1,34 @@
-import {DataForTable} from "./DataForTable.js";
 import {RandomElementFromArray} from "./utils/RandomElementFromArray.js";
-export class DataTableSubgroupSeparator extends DataForTable {
-  constructor(title, color) {
-    super();
-    this.title = title;
+export class DataTableSubgroupSeparator {
+  constructor(_title, _data, color) {
+    this._title = _title;
+    this._data = _data;
     const colorsNames = Object.keys(separatorsColors);
     if (!color || !colorsNames.includes(color)) {
       color = RandomElementFromArray(colorsNames);
     }
     this.separatorColor = separatorsColors[color];
   }
-  toObject() {
-    return {
-      title: this.title,
-      type: "separator",
-      bg: this.separatorColor.bg,
-      border: this.separatorColor.border
-    };
+  get title() {
+    return this._title;
+  }
+  get data() {
+    return this._data;
+  }
+  getRows(columnsCount, rowCreator) {
+    let rows = this.buildSeparator(columnsCount);
+    this._data.forEach((value) => {
+      const valueData = value.toObject();
+      rows += rowCreator(valueData);
+    });
+    return rows;
+  }
+  buildSeparator(columnsCount) {
+    return `<tr>
+    <td colspan="${columnsCount}" class="subgroup-description ${this.separatorColor.bg} ${this.separatorColor.border}">
+      ${this._title}
+    </td>
+  </tr>`;
   }
 }
 export const separatorsColors = {

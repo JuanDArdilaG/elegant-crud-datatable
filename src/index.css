@@ -2,7 +2,7 @@
 @tailwind components;
 
 .table-header {
-  @apply px-5 py-2 font-normal text-center border-b border-blue-900 text-2xl tracking-wide mb-1 mx-1;
+  @apply pt-2 pb-1 font-normal text-center border-b border-gray-700 text-xl tracking-wide mb-1 mx-1;
 }
 
 .subgroup-description {
@@ -10,7 +10,19 @@
 }
 
 .cell {
-  @apply font-light py-2 text-center border-b border-blue-100;
+  @apply font-light py-2 text-center border-b border-blue-100 w-auto text-sm;
+}
+
+.cell-input {
+  @apply min-w-0 w-full border-transparent font-light text-center pl-0 py-2 box-border;
+}
+
+.cell-input:focus {
+  @apply border-b border-gray-400 outline-none;
+}
+
+.cell-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 
 .settings {

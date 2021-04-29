@@ -2,9 +2,9 @@
   "name": "elegant-crud-datatable",
   "version": "0.0.2",
   "description": "Elegant CRUD DataTable",
-  "main": "./build",
+  "main": "./index.js",
   "files": [
-    "build"
+    "build/**/*"
   ],
   "scripts": {
     "test": "",

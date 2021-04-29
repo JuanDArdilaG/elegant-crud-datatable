@@ -1,9 +1,12 @@
-import { ColumnType, DataTable } from "./DataTable";
+import { ColumnType, CreateOptions, DataTable } from "./DataTable";
 import { DataTableSubgroupSeparator } from "./DataTableSubgroupSeparator";
 import { GastosGenerales } from "./GastosGenerales";
 
 export class GastosGeneralesDataTable extends DataTable<GastosGenerales> {
-  constructor(data: (GastosGenerales | DataTableSubgroupSeparator)[]) {
+  constructor(
+    data: (GastosGenerales | DataTableSubgroupSeparator<GastosGenerales>)[],
+    createOptions: CreateOptions
+  ) {
     super(
       [
         {
@@ -19,9 +22,10 @@ export class GastosGeneralesDataTable extends DataTable<GastosGenerales> {
           },
         },
         {
-          header: { name: "Monto" },
+          header: { name: "Monto", type: "number" },
           body: {
             classes: ["text-right"],
+            dataParser: (data) => "$" + data,
           },
         },
         {
@@ -31,7 +35,8 @@ export class GastosGeneralesDataTable extends DataTable<GastosGenerales> {
           },
         },
       ],
-      data
+      data,
+      createOptions
     );
   }
 }

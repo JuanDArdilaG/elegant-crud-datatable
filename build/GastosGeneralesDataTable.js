@@ -1,6 +1,6 @@
 import {ColumnType, DataTable} from "./DataTable.js";
 export class GastosGeneralesDataTable extends DataTable {
-  constructor(data) {
+  constructor(data, createOptions) {
     super([
       {
         header: {name: "Cuenta"},
@@ -15,9 +15,10 @@ export class GastosGeneralesDataTable extends DataTable {
         }
       },
       {
-        header: {name: "Monto"},
+        header: {name: "Monto", type: "number"},
         body: {
-          classes: ["text-right"]
+          classes: ["text-right"],
+          dataParser: (data2) => "$" + data2
         }
       },
       {
@@ -26,6 +27,6 @@ export class GastosGeneralesDataTable extends DataTable {
           classes: null
         }
       }
-    ], data);
+    ], data, createOptions);
   }
 }
