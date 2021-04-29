@@ -1,27 +1,36 @@
 import {DataTableSubgroupSeparator} from "./DataTableSubgroupSeparator.js";
 export class DataTable {
-  constructor(_columns, _data, _createOptions) {
+  constructor(_columns, _data, _dataTableStyles, _createOptions) {
     this._columns = _columns;
     this._data = _data;
+    this._dataTableStyles = _dataTableStyles;
     this._createOptions = _createOptions;
     this._rowsIds = [];
     this._createInputIds = [];
     this._divContainerId = "";
+    this._bgColorClass = "bg-white";
   }
   toDiv(divIdName) {
     let div = document.getElementById(divIdName);
     this._divContainerId = divIdName;
     div.innerHTML = this.buildTable();
     this.activeActions();
-    this.activateCreatorRow(this._createOptions);
+    if (this._createOptions) {
+      this.activateCreatorRow(this._createOptions);
+    }
   }
   refreshTable(currentPage) {
     $(`#${this._divContainerId}`).load(`${currentPage} #${this._divContainerId}`);
   }
   buildTable() {
+    const styles = this._dataTableStyles ? this._dataTableStyles.table : [];
+    const bgColorClass = styles.find((styleClass) => styleClass.includes("bg-"));
+    if (bgColorClass) {
+      this._bgColorClass = bgColorClass;
+    }
     const header = this.buildHead();
     const body = this.buildBody();
-    return `<table class="table-auto w-full box-border border-separate">${header}${body}</table>`;
+    return `<table class="table-auto w-full box-border border-separate pl-5 ${this._dataTableStyles && this._dataTableStyles.table.join(" ")}">${header}${body}</table>`;
   }
   buildHead() {
     let base = `<thead><tr>`;
@@ -54,7 +63,9 @@ export class DataTable {
       }
       base += `${row}`;
     });
-    base += this.buildCreatorRow(this._createOptions);
+    if (this._createOptions) {
+      base += this.buildCreatorRow(this._createOptions);
+    }
     return `${base}</tbody>`;
   }
   newRow(rowData) {
@@ -82,7 +93,7 @@ export class DataTable {
         const inputId = `cell-input-${index}`;
         this._createInputIds.push(inputId);
         const classes = column?.body.classes || [];
-        row += `<td class="cell box-border"><input type="${column.header.type ? column.header.type : "text"}" placeholder="${column.header.name}" id="${inputId}" name="${inputId}" class='cell-input ${classes.join(" ")}'/></td>`;
+        row += `<td class="cell box-border"><input type="${column.header.type ? column.header.type : "text"}" placeholder="${column.header.name}" id="${inputId}" name="${inputId}" class='cell-input ${this._bgColorClass} ${classes.join(" ")}'/></td>`;
       }
     });
     row += `<td class="text-center text-xl" colspan="${this.getSpecialColumns().length + 1}"><button id="create-button" type="submit"><i class="bi bi-check2 w-full mx-auto"></i></button></td>`;

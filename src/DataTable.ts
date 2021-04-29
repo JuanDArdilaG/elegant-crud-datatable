@@ -5,15 +5,18 @@ export class DataTable<DataType extends DataForTable> {
   private _rowsIds: string[];
   private _createInputIds: string[];
   private _divContainerId: string;
+  private _bgColorClass: string;
 
   constructor(
     private _columns: DataTableColumn[],
     private _data: (DataTableSubgroupSeparator<DataType> | DataType)[],
-    private _createOptions: CreateOptions
+    private _dataTableStyles?: DataTableStyles,
+    private _createOptions?: CreateOptions
   ) {
     this._rowsIds = [];
     this._createInputIds = [];
     this._divContainerId = "";
+    this._bgColorClass = "bg-white";
   }
 
   toDiv(divIdName: string) {
@@ -21,7 +24,9 @@ export class DataTable<DataType extends DataForTable> {
     this._divContainerId = divIdName;
     div.innerHTML = this.buildTable();
     this.activeActions();
-    this.activateCreatorRow(this._createOptions);
+    if (this._createOptions) {
+      this.activateCreatorRow(this._createOptions);
+    }
   }
 
   public refreshTable(currentPage: string) {
@@ -31,9 +36,20 @@ export class DataTable<DataType extends DataForTable> {
   }
 
   private buildTable(): string {
+    const styles = this._dataTableStyles ? this._dataTableStyles.table : [];
+    const bgColorClass = styles.find((styleClass) =>
+      styleClass.includes("bg-")
+    );
+
+    if (bgColorClass) {
+      this._bgColorClass = bgColorClass;
+    }
     const header = this.buildHead();
     const body = this.buildBody();
-    return `<table class="table-auto w-full box-border border-separate">${header}${body}</table>`;
+
+    return `<table class="table-auto w-full box-border border-separate pl-5 ${
+      this._dataTableStyles && this._dataTableStyles.table.join(" ")
+    }">${header}${body}</table>`;
   }
 
   private buildHead(): string {
@@ -70,7 +86,9 @@ export class DataTable<DataType extends DataForTable> {
       }
       base += `${row}`;
     });
-    base += this.buildCreatorRow(this._createOptions);
+    if (this._createOptions) {
+      base += this.buildCreatorRow(this._createOptions);
+    }
     return `${base}</tbody>`;
   }
 
@@ -108,9 +126,9 @@ export class DataTable<DataType extends DataForTable> {
           column.header.type ? column.header.type : "text"
         }" placeholder="${
           column.header.name
-        }" id="${inputId}" name="${inputId}" class='cell-input ${classes.join(
-          " "
-        )}'/></td>`;
+        }" id="${inputId}" name="${inputId}" class='cell-input ${
+          this._bgColorClass
+        } ${classes.join(" ")}'/></td>`;
       }
     });
     row += `<td class="text-center text-xl" colspan="${
@@ -240,6 +258,10 @@ export class DataTable<DataType extends DataForTable> {
     });
   }
 }
+
+export type DataTableStyles = {
+  table: string[];
+};
 
 export type DataTableColumn = {
   header: {

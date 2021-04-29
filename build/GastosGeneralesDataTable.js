@@ -27,6 +27,6 @@ export class GastosGeneralesDataTable extends DataTable {
           classes: null
         }
       }
-    ], data, createOptions);
+    ], data, {table: ["bg-green-400"]}, createOptions);
   }
 }
