@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {DataTableSubgroupSeparator} from "./DataTableSubgroupSeparator.js";
 export class DataTable {
   constructor(_columns, _data, _dataTableStyles, _createOptions) {
@@ -31,6 +32,25 @@ export class DataTable {
     const header = this.buildHead();
     const body = this.buildBody();
     return `<table class="table-auto w-full box-border border-separate pl-5 ${this._dataTableStyles && this._dataTableStyles.table.join(" ")}">${header}${body}</table>`;
+=======
+export class DataTable {
+  constructor(_columns, _data) {
+    this._columns = _columns;
+    this._data = _data;
+  }
+  toDiv(divIdName) {
+    let div = document.getElementById(divIdName);
+    div.innerHTML = this.buildTable();
+    this.activeActions();
+  }
+  buildTable() {
+    if (!this.isValidData()) {
+      return "";
+    }
+    const header = this.buildHead();
+    const body = this.buildBody();
+    return `<table class="table-auto w-full box-border border-separate">${header}${body}</table>`;
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
   }
   buildHead() {
     let base = `<thead><tr>`;
@@ -52,6 +72,7 @@ export class DataTable {
   buildBody() {
     let base = `<tbody>`;
     this._data.forEach((data, index) => {
+<<<<<<< HEAD
       let row = "";
       if (data instanceof DataTableSubgroupSeparator) {
         row += data.getRows(this._columns.length, (dataValue) => {
@@ -74,18 +95,44 @@ export class DataTable {
     }
     const rowId = String(this._rowsIds.length);
     this._rowsIds.push(rowId);
+=======
+      const objectData = data.toObject();
+      let row;
+      if (objectData.type === "separator" && objectData.title) {
+        row = this.newSubGroupSeparator(objectData);
+      } else {
+        row = this.newRow(String(index), objectData);
+      }
+      base += `${row}`;
+    });
+    return `${base}</tbody>`;
+  }
+  newSubGroupSeparator(data) {
+    return `<tr>
+      <td colspan="${this._columns.length}" class="subgroup-description ${data.bg} ${data.border}">
+        ${data.title}
+      </td>
+    </tr>`;
+  }
+  newRow(rowId, rowData) {
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
     let row = `<tr>`;
     const dataColumnsNames = Object.keys(rowData);
     dataColumnsNames.forEach((columnName, index) => {
       let data = rowData[columnName];
+<<<<<<< HEAD
       const dataTableColumn = this._columns[index];
       const classes = dataTableColumn?.body.classes || [];
       data = dataTableColumn.body.dataParser ? dataTableColumn.body.dataParser(data) : data;
+=======
+      const classes = this._columns[index]?.body.classes || [];
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
       row += `<td class="cell ${classes.join(" ")}">${data}</td>`;
     });
     row += this.buildSpecialCells(rowId);
     return row;
   }
+<<<<<<< HEAD
   buildCreatorRow(createOptions) {
     let row = `<tr><form action="" novalidate id="create-row">`;
     this._columns.forEach((column, index) => {
@@ -126,6 +173,10 @@ export class DataTable {
   }
   buildSpecialCells(rowId) {
     const specialColumns = this.getSpecialColumns();
+=======
+  buildSpecialCells(rowId) {
+    const specialColumns = this._columns.filter((column) => typeof column.header.name !== "string");
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
     let cell = "";
     specialColumns.forEach((column) => {
       const columnType = column.header.name;
@@ -136,6 +187,7 @@ export class DataTable {
     });
     return cell;
   }
+<<<<<<< HEAD
   isValidData(data) {
     return this._columns.find((column) => {
       const columnName = column.header.name;
@@ -143,13 +195,34 @@ export class DataTable {
         return !data[columnName];
       }
       return false;
+=======
+  isValidData() {
+    return this._data.find((data) => {
+      const objectData = data.toObject();
+      if (objectData.type === "separator" && objectData.title) {
+        return false;
+      }
+      return this._columns.find((column) => {
+        const columnName = column.header.name;
+        if (typeof columnName === "string") {
+          return !objectData[columnName];
+        }
+        return false;
+      });
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
     }) ? false : true;
   }
   buildActionsCell(rowId) {
     const actionsCell = `
+<<<<<<< HEAD
     <td class="cell text-center pl-2 pr-1 z-10">
       <div id="settings-${rowId}" class="settings z-10">
         <label id="settings-icon-${rowId}" class="settings-icon z-10" for="settings-hidden-toggle-${rowId}">
+=======
+    <td class="cell text-center pl-2 pr-1">
+      <div id="settings-${rowId}" class="settings">
+        <label id="settings-icon-${rowId}" class="settings-icon" for="settings-hidden-toggle-${rowId}">
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
           <i class="transition-all duration-200 bi bi-gear"></i
         ></label>
         <input
@@ -161,6 +234,7 @@ export class DataTable {
         />
       </div>
     </td>
+<<<<<<< HEAD
     <td class="relative right-3 z-0">
       <div
       id="settings-actions-${rowId}"
@@ -171,6 +245,18 @@ export class DataTable {
         ></i>
         <i
           class="bi bi-trash transition-colors duration-300 hover:text-red-700"
+=======
+    <td class="relative right-5">
+      <div
+      id="settings-actions-${rowId}"
+        class="settings-actions opacity-0 transition-all duration-500 ml-3 flex flex-col"
+      >
+        <i
+          class="bi bi-pencil transition-colors duration-300 hover:text-yellow-500"
+        ></i>
+        <i
+          class="bi bi-trash transition-colors duration-300 hover:text-red-600"
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
         ></i>
       </div>
     </td>
@@ -178,6 +264,7 @@ export class DataTable {
     return actionsCell;
   }
   activeActions() {
+<<<<<<< HEAD
     this._rowsIds.forEach((id) => {
       const settingsIcon = $(`#settings-icon-${id}`);
       const settingsIconItem = $(`#settings-icon-${id} i`);
@@ -190,12 +277,33 @@ export class DataTable {
             settingsIconItem.removeClass("bi-gear");
             settingsIconItem.removeClass("opacity-0");
           }, 250);
+=======
+    this._data.forEach((data, index) => {
+      const objectData = data.toObject();
+      if (objectData.type === "separator" && objectData.title) {
+        return;
+      }
+      const settingsIcon = $(`#settings-icon-${index}`);
+      const settingsIconItem = $(`#settings-icon-${index} i`);
+      const settingsActions = $(`#settings-actions-${index}`);
+      settingsIcon.on("click", () => {
+        if (settingsIconItem.hasClass("bi-x-circle")) {
+          settingsIconItem.addClass("opacity-0");
+          setTimeout(() => {
+            settingsIconItem.removeClass("bi-x-circle");
+            settingsIconItem.addClass("bi-gear");
+            settingsIconItem.removeClass("opacity-0");
+          }, 200);
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
         } else {
           settingsIconItem.toggleClass("bi-x-circle");
           settingsIconItem.toggleClass("bi-gear");
         }
         settingsActions.toggleClass("opacity-100");
+<<<<<<< HEAD
         settingsActions.toggleClass("invisible");
+=======
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
       });
     });
   }

@@ -1,14 +1,24 @@
+<<<<<<< HEAD
 import {RandomElementFromArray} from "./utils/RandomElementFromArray.js";
 export class DataTableSubgroupSeparator {
   constructor(_title, _data, color) {
     this._title = _title;
     this._data = _data;
+=======
+import {DataForTable} from "./DataForTable.js";
+import {RandomElementFromArray} from "./utils/RandomElementFromArray.js";
+export class DataTableSubgroupSeparator extends DataForTable {
+  constructor(title, color) {
+    super();
+    this.title = title;
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
     const colorsNames = Object.keys(separatorsColors);
     if (!color || !colorsNames.includes(color)) {
       color = RandomElementFromArray(colorsNames);
     }
     this.separatorColor = separatorsColors[color];
   }
+<<<<<<< HEAD
   get title() {
     return this._title;
   }
@@ -29,6 +39,15 @@ export class DataTableSubgroupSeparator {
       ${this._title}
     </td>
   </tr>`;
+=======
+  toObject() {
+    return {
+      title: this.title,
+      type: "separator",
+      bg: this.separatorColor.bg,
+      border: this.separatorColor.border
+    };
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
   }
 }
 export const separatorsColors = {

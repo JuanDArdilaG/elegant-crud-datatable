@@ -203,8 +203,12 @@ Correct the inability to style clickable types in iOS and Safari.
 */
 
 button,
+<<<<<<< HEAD
 [type='button'],
 [type='submit'] {
+=======
+[type='button'] {
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
   -webkit-appearance: button;
 }
 
@@ -519,6 +523,7 @@ video {
 
 .table-header {
   --tw-border-opacity: 1;
+<<<<<<< HEAD
   border-color: rgba(55, 65, 81, var(--tw-border-opacity));
   border-bottom-width: 1px;
   font-weight: 400;
@@ -529,6 +534,20 @@ video {
   margin-bottom: 0.25rem;
   padding-bottom: 0.25rem;
   padding-top: 0.5rem;
+=======
+  border-color: rgba(30, 58, 138, var(--tw-border-opacity));
+  border-bottom-width: 1px;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
   text-align: center;
   letter-spacing: 0.025em;
 }
@@ -557,6 +576,7 @@ video {
   border-color: rgba(219, 234, 254, var(--tw-border-opacity));
   border-bottom-width: 1px;
   font-weight: 300;
+<<<<<<< HEAD
   font-size: 0.875rem;
   line-height: 1.25rem;
   padding-top: 0.5rem;
@@ -587,6 +607,11 @@ video {
 
 .cell-input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
+=======
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 }
 
 .settings {
@@ -620,11 +645,14 @@ video {
   cursor: pointer;
 }
 
+<<<<<<< HEAD
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
 
+=======
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
@@ -645,11 +673,14 @@ video {
   background-color: rgba(209, 250, 229, var(--tw-bg-opacity));
 }
 
+<<<<<<< HEAD
 .bg-green-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(52, 211, 153, var(--tw-bg-opacity));
 }
 
+=======
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 .bg-blue-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(219, 234, 254, var(--tw-bg-opacity));
@@ -712,6 +743,7 @@ video {
   font-weight: 400;
 }
 
+<<<<<<< HEAD
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -722,6 +754,8 @@ video {
   margin-right: auto;
 }
 
+=======
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -754,8 +788,13 @@ video {
   position: relative;
 }
 
+<<<<<<< HEAD
 .right-3 {
   right: 0.75rem;
+=======
+.right-5 {
+  right: 1.25rem;
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 }
 
 * {
@@ -787,6 +826,7 @@ video {
   text-align: right;
 }
 
+<<<<<<< HEAD
 .hover\:text-red-700:hover {
   --tw-text-opacity: 1;
   color: rgba(185, 28, 28, var(--tw-text-opacity));
@@ -799,12 +839,23 @@ video {
 
 .invisible {
   visibility: hidden;
+=======
+.hover\:text-red-600:hover {
+  --tw-text-opacity: 1;
+  color: rgba(220, 38, 38, var(--tw-text-opacity));
+}
+
+.hover\:text-yellow-500:hover {
+  --tw-text-opacity: 1;
+  color: rgba(245, 158, 11, var(--tw-text-opacity));
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 }
 
 .w-full {
   width: 100%;
 }
 
+<<<<<<< HEAD
 .z-0 {
   z-index: 0;
 }
@@ -813,6 +864,8 @@ video {
   z-index: 10;
 }
 
+=======
+>>>>>>> 5eb1f369519f8a41762e2f4cd0f18a6669b3e38b
 .transition-all {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
