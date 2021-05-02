@@ -10,15 +10,23 @@
 }
 
 .cell {
-  @apply font-light py-2 text-center border-b border-blue-100 w-auto text-sm;
+  @apply py-2 border-b border-blue-100 text-sm px-2;
 }
 
 .cell-input {
-  @apply min-w-0 w-full border-transparent font-light text-center pl-0 py-2 box-border;
+  @apply max-w-full w-full border-transparent font-light text-center inline p-2;
 }
 
 .cell-input:focus {
   @apply border-b border-gray-400 outline-none;
+}
+
+.cell-input[readonly] {
+  @apply border-transparent;
+}
+
+button:focus {
+  outline: none;
 }
 
 .cell-input[type="number"]::-webkit-inner-spin-button {
@@ -39,6 +47,21 @@
 
 .settings-actions i {
   @apply cursor-pointer;
+}
+
+.creation-row {
+  max-height: 0px;
+  transition: max-height 0.25s ease-out;
+}
+
+.show-creation-row {
+  max-height: 100%;
+  transition: max-height 0.25s ease-in;
+}
+
+.cell-input[contenteditable]:empty::before {
+  content: "Empty";
+  color: gray;
 }
 
 @tailwind utilities;

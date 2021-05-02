@@ -1,18 +1,25 @@
 import { DataForTable, DataForTableTypes } from "./DataForTable";
+import {
+  DataTableColumnDefinition,
+  DataTableColumnType,
+} from "./DataTableColumnDefinition";
 import { DataTableSubgroupSeparator } from "./DataTableSubgroupSeparator";
 
 export class DataTable<DataType extends DataForTable> {
+  private _subgroups: DataTableSubgroupSeparator<DataType>[];
   private _rowsIds: string[];
   private _createInputIds: string[];
   private _divContainerId: string;
   private _bgColorClass: string;
 
   constructor(
-    private _columns: DataTableColumn[],
+    private _columns: DataTableColumnDefinition[],
     private _data: (DataTableSubgroupSeparator<DataType> | DataType)[],
-    private _dataTableStyles?: DataTableStyles,
-    private _createOptions?: CreateOptions
+    private _createOptions: CreateOptions,
+    private _dataTableStyles?: DataTableStyles
   ) {
+    this._subgroups = [];
+
     this._rowsIds = [];
     this._createInputIds = [];
     this._divContainerId = "";
@@ -24,9 +31,8 @@ export class DataTable<DataType extends DataForTable> {
     this._divContainerId = divIdName;
     div.innerHTML = this.buildTable();
     this.activeActions();
-    if (this._createOptions) {
-      this.activateCreatorRow(this._createOptions);
-    }
+    this.activateCreatorRow();
+    this._subgroups.forEach((subg) => subg.activateCreationRow());
   }
 
   public refreshTable(currentPage: string) {
@@ -61,7 +67,7 @@ export class DataTable<DataType extends DataForTable> {
       const headerName = column.header.name;
       if (typeof headerName != "string") {
         switch (headerName) {
-          case ColumnType.ACTIONS:
+          case DataTableColumnType.ACTIONS:
             base += `</div></th>`;
             base += `<th></th>`;
         }
@@ -77,17 +83,25 @@ export class DataTable<DataType extends DataForTable> {
     this._data.forEach((data, index) => {
       let row = "";
       if (data instanceof DataTableSubgroupSeparator) {
-        row += data.getRows(this._columns.length, (dataValue) => {
-          return this.newRow(dataValue);
-        });
+        this._subgroups.push(data);
+        row += data.getRows(
+          this._columns.length,
+          (dataValue) => {
+            return this.newRow(dataValue);
+          },
+          () => {},
+          (id: string) => {
+            return this.buildCreatorRow(id);
+          }
+        );
       } else {
         const objectData = data.toObject();
         row = this.newRow(objectData);
       }
       base += `${row}`;
     });
-    if (this._createOptions) {
-      base += this.buildCreatorRow(this._createOptions);
+    if (this._createOptions.fnCreate) {
+      base += this.buildCreatorRow("");
     }
     return `${base}</tbody>`;
   }
@@ -107,7 +121,9 @@ export class DataTable<DataType extends DataForTable> {
       data = dataTableColumn.body.dataParser
         ? dataTableColumn.body.dataParser(data)
         : data;
-      row += `<td class="cell ${classes.join(" ")}">${data}</td>`;
+      row += `<td class="cell"><p class="cell-input ${classes.join(
+        " "
+      )}" name="${columnName}-${rowId}">${data}</p></td>`;
     });
 
     row += this.buildSpecialCells(rowId);
@@ -115,34 +131,38 @@ export class DataTable<DataType extends DataForTable> {
     return row;
   }
 
-  private buildCreatorRow(createOptions: CreateOptions) {
-    let row = `<tr><form action="" novalidate id="create-row">`;
+  private buildCreatorRow(id: string) {
+    let row = `<tr id="subgroup-${id}-create-row" class="creation-row hidden transition transition-all duration-500">`;
     this._columns.forEach((column, index) => {
       if (typeof column.header.name === "string") {
-        const inputId = `cell-input-${index}`;
-        this._createInputIds.push(inputId);
+        const inputId = `subgroup-${id}-cell-input-${index}`;
+        if (id) {
+          const subgroup = this._subgroups.find((subg) => subg.id === id);
+          if (subgroup) {
+            subgroup.createInputIds.push(inputId);
+          }
+        } else {
+          this._createInputIds.push(inputId);
+        }
         const classes = column?.body.classes || [];
-        row += `<td class="cell box-border"><input type="${
-          column.header.type ? column.header.type : "text"
-        }" placeholder="${
-          column.header.name
-        }" id="${inputId}" name="${inputId}" class='cell-input ${
+        row += `<td class="cell max-w-full"><p max="${
+          column.body.newDataLength || 25
+        }" contenteditable="true" id="${inputId}" name="${inputId}" class='${
           this._bgColorClass
-        } ${classes.join(" ")}'/></td>`;
+        } cell-input ${classes.join(" ")}' role="textbox"></p></td>`;
       }
     });
-    row += `<td class="text-center text-xl" colspan="${
+    row += `<td class="cell text-center text-xl" colspan="${
       this.getSpecialColumns().length + 1
-    }"><button id="create-button" type="submit"><i class="bi bi-check2 w-full mx-auto"></i></button></td>`;
-    row += "</form></tr>";
+    }"><button id="subgroup-${id}-create-row-btn-accept"><i class="bi bi-check text-green-700"></i><button id='subgroup-${id}-create-row-btn-cancel'><i class="bi bi-x text-red-700"></i></button></td>`;
+    row += "</tr>";
     return row;
   }
 
-  private createNewRow(
-    createOptions: CreateOptions,
-    data: (string | number)[]
-  ) {
-    return createOptions ? createOptions.fnCreate(data) : false;
+  private createNewRow(data: (string | number)[]) {
+    return this._createOptions.fnCreate
+      ? this._createOptions.fnCreate(data)
+      : false;
   }
 
   private setInput(inputId: string) {
@@ -153,18 +173,23 @@ export class DataTable<DataType extends DataForTable> {
     });
   }
 
-  private activateCreatorRow(createOptions: CreateOptions) {
-    $("#create-row").on("submit", (e) => {
-      e.preventDefault();
-      const inputs = this._createInputIds.map((inputId) =>
-        $(`#${inputId}`).val().toString()
-      );
-      const created = this.createNewRow(createOptions, inputs);
-      console.log(created);
-    });
+  private activateCreatorRow() {
     this._columns.forEach((value, index) => {
       this.setInput(String(index));
     });
+    let textfields = document.getElementsByClassName("cell-input");
+    for (let i = 0; i < textfields.length; i++) {
+      textfields[i].addEventListener(
+        "keypress",
+        function (e) {
+          if (this.innerHTML.length >= this.getAttribute("max")) {
+            e.preventDefault();
+            return false;
+          }
+        },
+        false
+      );
+    }
   }
 
   private getSpecialColumns() {
@@ -180,7 +205,7 @@ export class DataTable<DataType extends DataForTable> {
     specialColumns.forEach((column) => {
       const columnType = column.header.name;
       switch (columnType) {
-        case ColumnType.ACTIONS:
+        case DataTableColumnType.ACTIONS:
           cell += this.buildActionsCell(rowId);
       }
     });
@@ -263,22 +288,6 @@ export type DataTableStyles = {
   table: string[];
 };
 
-export type DataTableColumn = {
-  header: {
-    name: string | ColumnType;
-    type?: "number" | "string";
-    classes?: string[];
-  };
-  body: {
-    classes?: string[];
-    dataParser?: (columnData: DataForTableTypes) => DataForTableTypes;
-  };
-};
-
-export enum ColumnType {
-  ACTIONS,
-}
-
 export type CreateOptions = {
-  fnCreate: (inputsData: (string | number)[]) => boolean;
+  fnCreate?: (inputsData: (string | number)[], subgroupId?: string) => boolean;
 };

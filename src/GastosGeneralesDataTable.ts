@@ -1,4 +1,5 @@
-import { ColumnType, CreateOptions, DataTable } from "./DataTable";
+import { CreateOptions, DataTable } from "./DataTable";
+import { DataTableColumnType } from "./DataTableColumnDefinition";
 import { DataTableSubgroupSeparator } from "./DataTableSubgroupSeparator";
 import { GastosGenerales } from "./GastosGenerales";
 
@@ -13,30 +14,35 @@ export class GastosGeneralesDataTable extends DataTable<GastosGenerales> {
           header: { name: "Cuenta" },
           body: {
             classes: ["font-normal"],
+            newDataLength: 6,
           },
         },
         {
           header: { name: "Descripción" },
           body: {
             classes: ["pl-5", "text-left"],
+            newDataLength: 250,
           },
         },
         {
-          header: { name: "Monto", type: "number" },
+          header: { name: "Monto" },
           body: {
             classes: ["text-right"],
             dataParser: (data) => "$" + data,
+            newDataLength: 15,
           },
         },
         {
-          header: { name: ColumnType.ACTIONS, classes: ["border-transparent"] },
+          header: {
+            name: DataTableColumnType.ACTIONS,
+            classes: ["border-transparent"],
+          },
           body: {
             classes: null,
           },
         },
       ],
       data,
-      { table: ["bg-green-400"] },
       createOptions
     );
   }
