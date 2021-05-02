@@ -1,6 +1,6 @@
 {
   "name": "elegant-crud-datatable",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Elegant CRUD DataTable",
   "main": "./index.js",
   "files": [
