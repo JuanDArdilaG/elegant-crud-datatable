@@ -1,4 +1,3 @@
-import { CreateOptions } from "./DataTable";
 import { DataTableSubgroupSeparator } from "./DataTableSubgroupSeparator";
 import { GastosGenerales } from "./GastosGenerales";
 import { GastosGeneralesDataTable } from "./GastosGeneralesDataTable";
