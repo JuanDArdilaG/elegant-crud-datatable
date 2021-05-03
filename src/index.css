@@ -10,7 +10,7 @@
 }
 
 .cell {
-  @apply py-2 border-b border-blue-100 text-sm px-2;
+  @apply text-center py-2 border-b border-blue-100 text-sm px-2;
 }
 
 .cell-input {

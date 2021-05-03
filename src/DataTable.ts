@@ -1,8 +1,9 @@
 import { DataForTable, DataForTableTypes } from "./DataForTable";
+import { DataTableColumnDefinition } from "./DataTableColumn/DataTableColumnDefinition";
 import {
-  DataTableColumnDefinition,
   DataTableColumnType,
-} from "./DataTableColumnDefinition";
+  DataTableSpecialColumn,
+} from "./DataTableColumn/DataTableSpecialColumn";
 import { DataTableSubgroupSeparator } from "./DataTableSubgroupSeparator";
 
 export class DataTable<DataType extends DataForTable> {
@@ -61,18 +62,20 @@ export class DataTable<DataType extends DataForTable> {
   private buildHead(): string {
     let base = `<thead><tr>`;
     this._columns.forEach((column) => {
-      base += `<th><div class="table-header ${
-        column.header.classes ? column.header.classes.join(" ") : ""
-      }">`;
-      const headerName = column.header.name;
-      if (typeof headerName != "string") {
-        switch (headerName) {
+      const cellClasses = column.header.styles?.cell || [];
+      const contentClasses = column.header.styles?.content || [];
+
+      base += `<th class="${cellClasses.join(
+        " "
+      )}"><div class="table-header ${contentClasses.join(" ")}">`;
+      if (column instanceof DataTableSpecialColumn) {
+        switch (column.type) {
           case DataTableColumnType.ACTIONS:
             base += `</div></th>`;
             base += `<th></th>`;
         }
       } else {
-        base += `${headerName}</div></th>`;
+        base += `${column.header.name}</div></th>`;
       }
     });
     return `${base}</tr></thead>`;
@@ -117,11 +120,14 @@ export class DataTable<DataType extends DataForTable> {
     dataColumnsNames.forEach((columnName, index) => {
       let data = rowData[columnName];
       const dataTableColumn = this._columns[index];
-      const classes = dataTableColumn?.body.classes || [];
+      const cellClasses = dataTableColumn.body.styles.cell || [];
+      const contentClasses = dataTableColumn.body.styles.content || [];
       data = dataTableColumn.body.dataParser
         ? dataTableColumn.body.dataParser(data)
         : data;
-      row += `<td class="cell"><p class="cell-input ${classes.join(
+      row += `<td class="cell ${cellClasses.join(
+        " "
+      )}"><p class="cell-input ${contentClasses.join(
         " "
       )}" name="${columnName}-${rowId}">${data}</p></td>`;
     });
@@ -144,12 +150,13 @@ export class DataTable<DataType extends DataForTable> {
         } else {
           this._createInputIds.push(inputId);
         }
-        const classes = column?.body.classes || [];
-        row += `<td class="cell max-w-full"><p max="${
+        const contentClasses = column.body.styles.content || [];
+        const cellClasses = column.body.styles.cell || [];
+        row += `<td class="cell ${cellClasses.join(" ")} max-w-full"><p max="${
           column.body.newDataLength || 25
         }" contenteditable="true" id="${inputId}" name="${inputId}" class='${
           this._bgColorClass
-        } cell-input ${classes.join(" ")}' role="textbox"></p></td>`;
+        } cell-input ${contentClasses.join(" ")}' role="textbox"></p></td>`;
       }
     });
     row += `<td class="cell text-center text-xl" colspan="${
@@ -157,12 +164,6 @@ export class DataTable<DataType extends DataForTable> {
     }"><button id="subgroup-${id}-create-row-btn-accept"><i class="bi bi-check text-green-700"></i><button id='subgroup-${id}-create-row-btn-cancel'><i class="bi bi-x text-red-700"></i></button></td>`;
     row += "</tr>";
     return row;
-  }
-
-  private createNewRow(data: (string | number)[]) {
-    return this._createOptions.fnCreate
-      ? this._createOptions.fnCreate(data)
-      : false;
   }
 
   private setInput(inputId: string) {
@@ -203,10 +204,11 @@ export class DataTable<DataType extends DataForTable> {
 
     let cell: string = "";
     specialColumns.forEach((column) => {
-      const columnType = column.header.name;
-      switch (columnType) {
-        case DataTableColumnType.ACTIONS:
-          cell += this.buildActionsCell(rowId);
+      if (column instanceof DataTableSpecialColumn) {
+        switch (column.type) {
+          case DataTableColumnType.ACTIONS:
+            cell += this.buildActionsCell(rowId);
+        }
       }
     });
 
@@ -214,10 +216,8 @@ export class DataTable<DataType extends DataForTable> {
   }
 
   private isValidData(data: Record<string, DataForTableTypes>): boolean {
-    console.log(data);
     return this._columns.find((column) => {
       const columnName = column.header.name;
-      console.log(columnName);
       if (typeof columnName === "string") {
         const value = data[columnName];
         return !value && value !== "" && value !== 0;
