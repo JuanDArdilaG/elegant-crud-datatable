@@ -214,10 +214,13 @@ export class DataTable<DataType extends DataForTable> {
   }
 
   private isValidData(data: Record<string, DataForTableTypes>): boolean {
+    console.log(data);
     return this._columns.find((column) => {
       const columnName = column.header.name;
+      console.log(columnName);
       if (typeof columnName === "string") {
-        return !data[columnName];
+        const value = data[columnName];
+        return !value && value !== "" && value !== 0;
       }
       return false;
     })
