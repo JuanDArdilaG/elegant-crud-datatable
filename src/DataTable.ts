@@ -53,7 +53,7 @@ export class DataTable<DataType extends DataForTable> {
     const header = this.buildHead();
     const body = this.buildBody();
 
-    return `<table class="table-auto w-full box-border border-separate pl-5 ${
+    return `<table class="table-auto w-full box-border border-separate ${
       this._dataTableStyles && this._dataTableStyles.table.join(" ")
     }">${header}${body}</table>`;
   }
